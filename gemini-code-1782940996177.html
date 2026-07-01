@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elec and Gas | Reliable Electrical & Gas Services</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #06090e;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .tech-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+        }
+
+        /* Clean Premium Bento Cells with Client-Friendly Interactive Glows */
+        .bento-cell {
+            background: linear-gradient(135deg, rgba(15, 22, 36, 0.7) 0%, rgba(10, 14, 22, 0.9) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .bento-cell:hover {
+            border-color: rgba(249, 115, 22, 0.3);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 25px 1px rgba(249, 115, 22, 0.03);
+            transform: translateY(-3px);
+        }
+
+        .bento-cell::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(600px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(249, 115, 22, 0.05), transparent 50%);
+            z-index: 1;
+            border-radius: inherit;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .bento-cell:hover::before {
+            opacity: 1;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: flex;
+            width: max-content;
+            animation: marquee 30s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+
+        .mask-gradient {
+            mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #06090e; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    </style>
+</head>
+<body x-data="{ mobileMenuOpen: false, showSuccess: false }" x-init="if (window.location.search.includes('success=true')) { showSuccess = true; history.replaceState(null, '', window.location.pathname); }">
+
+    <!-- Custom Success Toast Banner -->
+    <div x-show="showSuccess" x-transition class="fixed top-24 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-md bg-emerald-950/90 backdrop-blur-md border border-emerald-500/30 p-4 rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.7)] flex items-start gap-3.5">
+        <div class="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
+            <i class="fa-solid fa-circle-check text-sm"></i>
+        </div>
+        <div class="flex-1">
+            <h4 class="font-bold text-xs text-white uppercase tracking-wider">Form Submitted</h4>
+            <p class="text-xs text-slate-300 mt-0.5 leading-relaxed">Thanks! We will be in contact soon.</p>
+        </div>
+        <button @click="showSuccess = false" class="text-slate-500 hover:text-white transition-colors">
+            <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+    </div>
+
+    <!-- Ambient Background Waves -->
+    <div class="absolute top-0 left-0 w-full h-[1100px] pointer-events-none overflow-hidden z-0 tech-grid">
+        <canvas id="waveCanvas" class="absolute top-0 left-0 w-full h-full opacity-20"></canvas>
+        <div class="absolute top-[-5%] left-[-10%] w-[500px] h-[500px] rounded-full bg-orange-500/5 blur-[120px]"></div>
+        <div class="absolute top-[15%] right-[-10%] w-[500px] h-[500px] rounded-full bg-amber-600/4 blur-[120px]"></div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-[#06090e]/80 backdrop-blur-md border-b border-white/[0.03]">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2.5">
+                <div class="relative flex items-center justify-center w-9 h-9 rounded-lg bg-white/[0.03] border border-white/10">
+                    <i class="fa-solid fa-bolt text-xs text-orange-400 absolute top-2 left-2.5"></i>
+                    <i class="fa-solid fa-fire text-xs text-orange-600 absolute bottom-2 right-2.5"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-white">Elec and <span class="text-orange-500">Gas</span></span>
+            </a>
+
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+                <a href="#services" class="hover:text-orange-400 transition-colors">Our Services</a>
+                <a href="#coverage" class="hover:text-orange-400 transition-colors">Areas We Cover</a>
+                <a href="#testimonials" class="hover:text-orange-400 transition-colors">Reviews</a>
+                <a href="#quote" class="hover:text-orange-400 transition-colors">Get Free Quote</a>
+            </nav>
+
+            <div class="hidden md:flex items-center gap-6">
+                <a href="tel:+447861314414" class="text-sm font-semibold text-slate-300 hover:text-white transition-colors flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span> +44 7861314414
+                </a>
+                <a href="#quote" class="inline-flex items-center justify-center h-10 px-5 rounded-lg bg-orange-600 text-white text-xs font-bold uppercase tracking-wider hover:bg-orange-500 transition-all shadow-[0_4px_15px_rgba(234,88,12,0.2)]">
+                    Get A Quote
+                </a>
+            </div>
+
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-slate-400 hover:text-white">
+                <i class="fa-solid" :class="mobileMenuOpen ? 'fa-xmark text-xl' : 'fa-bars text-xl'"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Drawer -->
+        <div x-show="mobileMenuOpen" x-transition class="md:hidden bg-[#06090e] border-b border-white/5 px-6 py-6 space-y-4">
+            <a href="#services" @click="mobileMenuOpen = false" class="block text-slate-300 font-medium">Our Services</a>
+            <a href="#coverage" @click="mobileMenuOpen = false" class="block text-slate-300 font-medium">Areas We Cover</a>
+            <a href="#testimonials" @click="mobileMenuOpen = false" class="block text-slate-300 font-medium">Reviews</a>
+            <a href="#quote" @click="mobileMenuOpen = false" class="block text-slate-300 font-medium">Get Free Quote</a>
+            <div class="pt-4 border-t border-white/5">
+                <a href="tel:+447861314414" class="flex items-center justify-center gap-2 h-11 rounded-lg bg-white/5 border border-white/10 text-white text-sm font-semibold">
+                    <i class="fa-solid fa-phone text-orange-400"></i> Call Us Directly
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative pt-36 pb-16 md:pt-48 md:pb-24 px-6 max-w-7xl mx-auto z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div class="lg:col-span-7 space-y-6 text-center lg:text-left" data-aos="fade-right">
+                
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-xs font-semibold tracking-wide text-orange-400">
+                    <i class="fa-solid fa-check text-[10px]"></i> Fully Insured & Certified Experts
+                </div>
+                
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-[1.15]">
+                    Professional Electrical, Gas & <span class="bg-gradient-to-r from-orange-400 to-amber-500 bg-clip-text text-transparent">Heating Services</span>
+                </h1>
+                
+                <p class="text-slate-400 text-base md:text-lg max-w-xl mx-auto lg:mx-0 font-normal leading-relaxed">
+                    From quick residential repairs and safety checks to complete commercial boiler installations and insulation upgrades. Safe, friendly, and always reliable.
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                    <a href="tel:+447861314414" class="w-full sm:w-auto h-12 px-6 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-bold text-sm shadow-[0_4px_20px_rgba(234,88,12,0.25)] hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-phone text-xs"></i> Call Now: +44 7861314414
+                    </a>
+                    <a href="#quote" class="w-full sm:w-auto h-12 px-6 rounded-lg bg-white/[0.02] border border-white/10 font-bold text-sm text-slate-300 hover:bg-white/[0.05] hover:text-white transition-all flex items-center justify-center">
+                        Request a Free Quote
+                    </a>
+                </div>
+            </div>
+
+            <!-- Feature Bento Grid -->
+            <div class="lg:col-span-5 grid grid-cols-2 gap-4" data-aos="fade-left">
+                <div class="bento-cell p-5 rounded-xl">
+                    <i class="fa-solid fa-file-shield text-xl text-orange-400 mb-3"></i>
+                    <h3 class="font-bold text-sm text-white mb-1">Safety Reports</h3>
+                    <p class="text-xs text-slate-400 leading-normal">Official EICR testing and gas safety documents for landlords & buyers.</p>
+                </div>
+                <div class="bento-cell p-5 rounded-xl mt-4">
+                    <i class="fa-solid fa-fire-burner text-xl text-orange-500 mb-3"></i>
+                    <h3 class="font-bold text-sm text-white mb-1">Boiler Systems</h3>
+                    <p class="text-xs text-slate-400 leading-normal">Expert boiler installation, service tuning, and quick breakdown fixes.</p>
+                </div>
+                <div class="bento-cell p-5 rounded-xl">
+                    <i class="fa-solid fa-house-chimney-crack text-xl text-amber-500 mb-3"></i>
+                    <h3 class="font-bold text-sm text-white mb-1">Home Insulation</h3>
+                    <p class="text-xs text-slate-400 leading-normal">Premium loft and wall insulation mapping to drastically cut energy bills.</p>
+                </div>
+                <div class="bento-cell p-5 rounded-xl bg-gradient-to-br from-slate-900/40 to-slate-950/80 mt-4 flex flex-col justify-center items-center text-center">
+                    <span class="text-4xl font-bold tracking-tight text-white">5.0</span>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">Google Rating Index</p>
+                    <div class="flex gap-1 mt-2 text-orange-500 text-xs">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 px-6 max-w-7xl mx-auto relative z-10">
+        <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
+            <span class="text-xs font-bold tracking-wider text-orange-400 uppercase">What We Do Best</span>
+            <h2 class="text-3xl font-bold tracking-tight text-white mt-1">Our Core Services</h2>
+            <p class="text-slate-400 text-sm mt-2">Professional trade work executed safely, cleanly, and legally by fully licensed engineers.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Service 1 -->
+            <div class="bento-cell p-6 rounded-xl flex flex-col justify-between" data-aos="fade-up" data-aos-delay="100">
+                <div>
+                    <div class="w-10 h-10 rounded-lg bg-white/[0.02] border border-white/10 flex items-center justify-center text-orange-400 mb-5">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Electrical Solutions</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">Full property rewires, updated fuse board installations, troubleshooting electrical faults, lighting designs, and complete EICR safety inspections for residential properties.</p>
+                </div>
+                <div class="mt-8 pt-4 border-t border-white/[0.04] flex items-center justify-between text-xs font-semibold text-orange-400">
+                    <span>NICEIC Standard Quality</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </div>
+
+            <!-- Service 2 -->
+            <div class="bento-cell p-6 rounded-xl flex flex-col justify-between" data-aos="fade-up" data-aos-delay="200">
+                <div>
+                    <div class="w-10 h-10 rounded-lg bg-white/[0.02] border border-white/10 flex items-center justify-center text-orange-500 mb-5">
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Gas & Heating</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">Energy-efficient boiler swaps, central heating servicing, emergency pipe leak repairs, radiator work, and mandatory Gas Safety Certificates (CP12) for local landlords.</p>
+                </div>
+                <div class="mt-8 pt-4 border-t border-white/[0.04] flex items-center justify-between text-xs font-semibold text-orange-500">
+                    <span>Gas Safe Registered</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </div>
+
+            <!-- Service 3 -->
+            <div class="bento-cell p-6 rounded-xl flex flex-col justify-between" data-aos="fade-up" data-aos-delay="300">
+                <div>
+                    <div class="w-10 h-10 rounded-lg bg-white/[0.02] border border-white/10 flex items-center justify-center text-amber-500 mb-5">
+                        <i class="fa-solid fa-leaf"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Energy-Saving Insulation</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed">Top-tier loft insulation fitting and wall treatments designed specifically to stop warm air escaping your home, instantly lowering your yearly heating bills.</p>
+                </div>
+                <div class="mt-8 pt-4 border-t border-white/[0.04] flex items-center justify-between text-xs font-semibold text-amber-500">
+                    <span>Maximize Eco Savings</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Areas Covered -->
+    <section id="coverage" class="py-20 bg-slate-950/30 border-y border-white/[0.02] px-6 relative z-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-5 space-y-5" data-aos="fade-right">
+                    <span class="text-xs font-bold tracking-wider text-orange-400 uppercase">Where We Work</span>
+                    <h2 class="text-3xl font-bold tracking-tight text-white">Our Service Locations</h2>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Operating out of our central hub in <strong class="text-white font-semibold">Reading</strong>, our fleet provides fast emergency dispatches and scheduled work across Berkshire and all surrounding areas. We limit travel to a strict <strong class="text-orange-400 font-semibold">1.5-hour maximum radius</strong> to ensure we are always on time for your appointment.
+                    </p>
+                    
+                    <div class="space-y-3 pt-2">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-location-dot text-orange-500 text-sm"></i>
+                            <span class="text-xs font-medium text-slate-300">Based in Reading (Berkshire HQ Hub)</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-clock text-orange-500 text-sm"></i>
+                            <span class="text-xs font-medium text-slate-300">Guaranteed maximum 1.5-hour response line</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7" data-aos="fade-left">
+                    <div class="bento-cell p-6 rounded-xl grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <div class="col-span-2 sm:col-span-3 bg-slate-900/70 p-4 rounded-lg border border-orange-500/20 flex items-center justify-between">
+                            <span class="font-bold text-xs tracking-wider text-white uppercase"><i class="fa-solid fa-car-tunnel mr-2 text-orange-500"></i> Main Coverage Hubs</span>
+                            <span class="text-[10px] bg-orange-500/10 text-orange-400 font-bold px-2 py-0.5 rounded uppercase">Fast Dispatch</span>
+                        </div>
+                        
+                        <div class="p-3 bg-white/[0.01] border border-white/[0.03] rounded-lg text-center text-xs font-medium text-slate-300">Reading</div>
+                        <div class="p-3 bg-white/[0.01] border border-white/[0.03] rounded-lg text-center text-xs font-medium text-slate-300">London</div>
+                        <div class="p-3 bg-white/[0.01] border border-white/[0.03] rounded-lg text-center text-xs font-medium text-slate-300">Oxford</div>
+                        <div class="p-3 bg-white/[0.01] border border-white/[0.03] rounded-lg text-center text-xs font-medium text-slate-300">Swindon</div>
+                        <div class="p-3 bg-white/[0.01] border border-white/[0.03] rounded-lg text-center text-xs font-medium text-slate-300">Southampton</div>
+                        <div class="p-3 bg-white/[0.01] border border-white/[0.03] rounded-lg text-center text-xs font-medium text-slate-300">Guildford</div>
+                        <div class="p-3 bg-white/[0.01] border border-white/[0.03] rounded-lg text-center text-xs font-medium text-slate-300 col-span-2 sm:col-span-3">Milton Keynes & Surrounding Towns</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Marquee -->
+    <section id="testimonials" class="py-20 overflow-hidden relative z-10">
+        <div class="text-center max-w-2xl mx-auto mb-14 px-6" data-aos="fade-up">
+            <span class="text-xs font-bold tracking-wider text-orange-400 uppercase">Client Reviews</span>
+            <h2 class="text-3xl font-bold tracking-tight text-white mt-1">What Our Customers Say</h2>
+            <p class="text-slate-400 text-sm mt-1">Real ratings left by homeowners and landlords in your local region.</p>
+        </div>
+
+        <div class="w-full flex mask-gradient relative">
+            <div class="animate-marquee gap-5 px-2">
+                <!-- Card 1 -->
+                <div class="bento-cell p-6 rounded-xl w-[320px] sm:w-[420px] flex flex-col justify-between">
+                    <p class="text-slate-300 text-xs leading-relaxed font-normal">"Very high quality work throughout. Had our full loft insulation done and the difference is night and day — the house stays so much warmer now. Incredibly professional and tidy, would highly recommend Elecandgas to anyone."</p>
+                    <div class="flex items-center gap-3.5 mt-6 pt-4 border-t border-white/[0.04]">
+                        <div class="w-8 h-8 rounded bg-orange-500/10 text-orange-400 font-bold flex items-center justify-center text-xs">JT</div>
+                        <div>
+                            <h4 class="font-bold text-xs text-white">James T.</h4>
+                            <p class="text-[10px] text-slate-500 font-normal">Reading, Berkshire</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="bento-cell p-6 rounded-xl w-[320px] sm:w-[420px] flex flex-col justify-between">
+                    <p class="text-slate-300 text-xs leading-relaxed font-normal">"Brilliant service from start to finish. Had a new boiler installed and the whole process was seamless. The engineer explained everything clearly, left the place spotless, and the price was very fair. Top-notch gas work."</p>
+                    <div class="flex items-center gap-3.5 mt-6 pt-4 border-t border-white/[0.04]">
+                        <div class="w-8 h-8 rounded bg-orange-500/10 text-orange-400 font-bold flex items-center justify-center text-xs">SP</div>
+                        <div>
+                            <h4 class="font-bold text-xs text-white">Sarah P.</h4>
+                            <p class="text-[10px] text-slate-500 font-normal">Oxford, Oxfordshire</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="bento-cell p-6 rounded-xl w-[320px] sm:w-[420px] flex flex-col justify-between">
+                    <p class="text-slate-300 text-xs leading-relaxed font-normal">"Called Elecandgas for an emergency electrical fault and they were out within hours. Found the issue quickly, rewired the problem area, and gave us a full safety certificate. Absolute lifesavers — wouldn't use anyone else!"</p>
+                    <div class="flex items-center gap-3.5 mt-6 pt-4 border-t border-white/[0.04]">
+                        <div class="w-8 h-8 rounded bg-orange-500/10 text-orange-400 font-bold flex items-center justify-center text-xs">MK</div>
+                        <div>
+                            <h4 class="font-bold text-xs text-white">Mark K.</h4>
+                            <p class="text-[10px] text-slate-500 font-normal">Guildford, Surrey</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quote Form Section -->
+    <section id="quote" class="py-20 px-6 max-w-7xl mx-auto relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            
+            <div class="lg:col-span-5 flex flex-col justify-between bento-cell p-6 md:p-8 rounded-xl bg-gradient-to-b from-slate-900/30 to-slate-950/90" data-aos="fade-right">
+                <div class="space-y-5">
+                    <span class="text-xs font-bold tracking-wider text-orange-400 uppercase">No-Obligation Estimate</span>
+                    <h2 class="text-3xl font-bold tracking-tight text-white">Ready to Start? <br>Get Your Free Quote</h2>
+                    <p class="text-slate-400 text-xs leading-relaxed">
+                        Fill out our secure quick form with your project details. Your information is automatically packaged and emailed directly to our scheduling manager for review.
+                    </p>
+                    
+                    <div class="space-y-3 pt-2">
+                        <a href="tel:+447861314414" class="flex items-center gap-4 p-4 rounded-lg bg-white/[0.01] border border-white/[0.04] hover:border-orange-500/20 transition-all group">
+                            <div class="w-8 h-8 rounded bg-white/[0.02] border border-white/10 flex items-center justify-center text-orange-400 text-xs group-hover:scale-105 transition-transform"><i class="fa-solid fa-phone"></i></div>
+                            <div>
+                                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Direct Office Line</p>
+                                <p class="text-xs font-bold text-white tracking-wide">+44 7861314414</p>
+                            </div>
+                        </a>
+                        <a href="mailto:elecandgasuk@gmail.com" class="flex items-center gap-4 p-4 rounded-lg bg-white/[0.01] border border-white/[0.04] hover:border-orange-600/20 transition-all group">
+                            <div class="w-8 h-8 rounded bg-white/[0.02] border border-white/10 flex items-center justify-center text-orange-400 text-xs group-hover:scale-105 transition-transform"><i class="fa-solid fa-envelope"></i></div>
+                            <div>
+                                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Direct Email Node</p>
+                                <p class="text-xs font-bold text-white tracking-wide">elecandgasuk@gmail.com</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-white/[0.04] mt-8 lg:mt-0 text-[11px] text-slate-500 flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-orange-500/50"></i> Public Liability Insurance Active & Approved.
+                </div>
+            </div>
+
+            <!-- Formspree Connected Form -->
+            <div class="lg:col-span-7 bento-cell p-6 md:p-8 rounded-xl" data-aos="fade-left">
+                <!-- Custom Formspree Action with clean domain redirect appended -->
+                <form action="https://formspree.io/f/mbdvzwyv" method="POST" class="space-y-5">
+                    <input type="hidden" name="_next" value="https://elecandgas.uk?success=true">
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Your Full Name</label>
+                            <input type="text" name="name" required class="w-full h-11 px-4 rounded-lg bg-white/[0.02] border border-white/10 text-white placeholder-slate-700 focus:outline-none focus:border-orange-500/40 text-xs transition-colors" placeholder="e.g. John Doe">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Phone Number</label>
+                            <input type="tel" name="phone" required class="w-full h-11 px-4 rounded-lg bg-white/[0.02] border border-white/10 text-white placeholder-slate-700 focus:outline-none focus:border-orange-500/40 text-xs transition-colors" placeholder="e.g. 07123 456789">
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Email Address</label>
+                        <input type="email" name="email" required class="w-full h-11 px-4 rounded-lg bg-white/[0.02] border border-white/10 text-white placeholder-slate-700 focus:outline-none focus:border-orange-500/40 text-xs transition-colors" placeholder="yourname@example.com">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Which Service Do You Need?</label>
+                        <select name="service_required" class="w-full h-11 px-4 rounded-lg bg-[#0e1420] border border-white/10 text-slate-300 focus:outline-none focus:border-orange-500/40 text-xs transition-colors">
+                            <option value="electrical">Electrical Work or Safety Checks (EICR)</option>
+                            <option value="gas_heating">Boiler, Gas or Heating Repairs</option>
+                            <option value="insulation">Loft or Home Insulation Upgrades</option>
+                            <option value="other_multiple">Multiple Services / Other Request</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Briefly Describe Your Requirements</label>
+                        <textarea name="message" rows="4" required class="w-full p-4 rounded-lg bg-white/[0.02] border border-white/10 text-white placeholder-slate-700 focus:outline-none focus:border-orange-500/40 text-xs transition-colors resize-none" placeholder="Let us know how we can help you..."></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full h-11 rounded-lg bg-white text-[#06090e] font-bold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2 cursor-pointer hover:bg-slate-200">
+                        Submit Quote Request <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/[0.02] bg-slate-950/70 py-6 px-6 text-center text-[10px] font-medium tracking-widest uppercase text-slate-500 relative z-10">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 Elecandgas. All Rights Reserved.</p>
+            <p class="text-slate-600 font-bold">Safe • Fully Certified • Professional</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ once: true, offset: 90, duration: 700, easing: 'ease-out-cubic' });
+
+        // Cell hover mouse position listener
+        document.querySelectorAll('.bento-cell').forEach(cell => {
+            cell.addEventListener('mousemove', e => {
+                const rect = cell.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                cell.style.setProperty('--mouse-x', `${x}px`);
+                cell.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // Background Wave Generator Script
+        const canvas = document.getElementById('waveCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = 1100;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let increment = 0;
+        function animateWaves() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height / 2);
+            for (let i = 0; i < canvas.width; i++) {
+                const y = Math.sin(i * 0.002 + increment) * 45 + Math.cos(i * 0.001 + increment * 0.5) * 20 + 320;
+                ctx.lineTo(i, y);
+            }
+            ctx.strokeStyle = 'rgba(249, 115, 22, 0.07)';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            increment += 0.004;
+            requestAnimationFrame(animateWaves);
+        }
+        animateWaves();
+    </script>
+</body>
+</html>
